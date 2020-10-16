@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"cloud.google.com/go/bigquery"
 	"github.com/spf13/cobra"
+	"google.golang.org/api/option"
 )
 
 var identifier string
@@ -22,31 +25,16 @@ var deploymentCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
 
+		credentials, credentialsBytes := getCredentials()
+
 		ctx := context.Background()
-		client, err := bigquery.NewClient(ctx, "pulse-poc-1")
+		clientOptions := option.WithCredentialsJSON(credentialsBytes)
+		client, err := bigquery.NewClient(ctx, credentials.ProjectID, clientOptions)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		// TODO: Remove after we do not need this example for testing
-		// q := client.Query(`SELECT * FROM ` + "`pulse-poc-1.rodrigopessoa.deployments`" + ` LIMIT 1000`)
-		// it, err := q.Read(ctx)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-		// for {
-		// 	var values []bigquery.Value
-		// 	err := it.Next(&values)
-		// 	if err == iterator.Done {
-		// 		break
-		// 	}
-		// 	if err != nil {
-		// 		fmt.Println(err)
-		// 	}
-		// 	fmt.Println(values)
-		// }
-
-		ins := client.Dataset("rodrigopessoa").Table("deployments").Inserter()
+		ins := client.Dataset(credentials.DataSet).Table("deployments").Inserter()
 		items := []*deployment{{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args}}
 		if err := ins.Put(ctx, items); err != nil {
 			fmt.Println(err)
@@ -63,6 +51,18 @@ func init() {
 	deploymentCmd.Flags().StringVar(&source, "source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
 }
 
+func getCredentials() (CredentialsType, []byte) {
+	var credentialsBytes []byte
+	var credentials CredentialsType
+	credentialsBytes, err := base64.StdEncoding.DecodeString(CredentialsString)
+	if err != nil {
+		fmt.Println(err)
+	}
+	json.Unmarshal(credentialsBytes, &credentials)
+
+	return credentials, credentialsBytes
+}
+
 // BigQuery Deployments table schema
 type deployment struct {
 	Source      string    `bigquery:"source"`
@@ -71,12 +71,8 @@ type deployment struct {
 	Changes     []string  `bigquery:"changes"`
 }
 
-// Save method for the Deployment entity
-func (deployment *deployment) save() (map[string]bigquery.Value, string, error) {
-	return map[string]bigquery.Value{
-		"source":       deployment.Source,
-		"deploy_id":    deployment.DeployID,
-		"time_created": deployment.TimeCreated,
-		"changes":      deployment.Changes,
-	}, "", nil
+// CredentialsType authenticates the user
+type CredentialsType struct {
+	ProjectID string `json:"project_id"`
+	DataSet   string `json:"data_set"`
 }
