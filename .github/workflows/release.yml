@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+            # Will fetch all history and tags required to generate version
+            fetch-depth: 0
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.15.2"
+      - name: "Checkup"
+        run: go env GOPATH
+      - name: "Install dependencies"
+        run: |
+          go get -v ./...
+          go get github.com/inconshreveable/mousetrap
+      - name: "Build"
+        run: go build
+      - name: Git Version
+        id: generate-version
+        uses: codacy/git-version@2.2.0
+      - name: "Tag version"
+        run: |
+          git tag ${{ steps.generate-version.outputs.version }}
+          git push --tags "https://codacy:${{ secrets.GITHUB_TOKEN }}@github.com/codacy/pulse-event-cli"
+      - name: Release
+        uses: goreleaser/goreleaser-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: latest
+          args: release
+      - name: "Push binaries to bintray"
+        env:
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+        run: |
+          for binary_directory in $(find dist -type d -iname 'pulse-event-cli_*' | awk -F'/' '{print $2}')
+          do
+            binary="$(ls dist/$binary_directory)"
+            echo "Pushing dist/$binary_directory/$binary to bintray"
+            curl \
+              -u codacy-ci:$BINTRAY_API_KEY \
+              -H "X-Bintray-Package:event-cli" \
+              -H "X-Bintray-Version:${{ steps.generate-version.outputs.version }}" \
+              -T "dist/$binary_directory/$binary" \
+              https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/$binary_directory/$binary
+          done
+          curl -X POST -ucodacy-ci:$BINTRAY_API_KEY https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/publish
