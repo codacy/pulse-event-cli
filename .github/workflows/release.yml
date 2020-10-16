@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+            # Will fetch all history and tags required to generate version
+            fetch-depth: 0
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.15.2"
+      - name: "Checkup"
+        run: go env GOPATH
+      - name: "Install dependencies"
+        run: |
+          go get -v ./...
+          go get github.com/inconshreveable/mousetrap
+      - name: "Build"
+        run: go build
+      - name: Git Semantic Version
+        id: generate-version
+        uses: PaulHatch/semantic-version@v3.1.2
+        with:
+          branch: "master"
+          tag_prefix: ""
+          major_pattern: "breaking:"
+          minor_pattern: "feature:"
+          format: "${major}.${minor}.${patch}-prerelease.${increment}"
+      - name: "Tag version"
+        run: |
+          git tag ${{ steps.generate-version.outputs.version }}
+          git push --tags "https://codacy:${{ secrets.GITHUB_TOKEN }}@github.com/codacy/pulse-event-cli"
+      - name: Release
+        uses: goreleaser/goreleaser-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: latest
+          args: release --rm-dist

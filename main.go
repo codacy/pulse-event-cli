@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./cmd"
+	"github.com/codacy/event-cli/cmd"
 )
 
 func main() {
