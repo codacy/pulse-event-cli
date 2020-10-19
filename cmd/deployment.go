@@ -21,7 +21,7 @@ var deploymentCmd = &cobra.Command{
 		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
 
 		items := []*deployment{{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args}}
-		CreateEvent("deployments", items)
+		createEvent("deployments", items)
 	},
 }
 

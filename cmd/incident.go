@@ -21,7 +21,7 @@ var incidentCmd = &cobra.Command{
 		fmt.Print("Pushing incident event with identifier ", identifier, ", created timestamp ", time.Unix(timestampCreated, 0), ", resolved timestamp ", time.Unix(timestampResolved, 0), ", source ", source, "\n")
 
 		items := []*incident{{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0)}}
-		CreateEvent("incidents", items)
+		createEvent("incidents", items)
 	},
 }
 

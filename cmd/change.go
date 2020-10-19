@@ -21,7 +21,7 @@ var changeCmd = &cobra.Command{
 		fmt.Print("Pushing change event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and event type ", eventType, "\n")
 
 		items := []*change{{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType}}
-		CreateEvent("changes", items)
+		createEvent("changes", items)
 	},
 }
 
