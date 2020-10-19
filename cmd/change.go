@@ -7,32 +7,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var changeIdentifier string
-var changeTimestamp int64
-var changeSource string
-var changeEventType string
-
 // changeCmd represents the change command
 var changeCmd = &cobra.Command{
 	Use:   "change",
 	Short: "Push change event",
 	Long:  `Pushes a change event to the Pulse service.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print("Pushing change event with identifier ", changeIdentifier, ", timestamp ", time.Unix(changeTimestamp, 0), ", source ", changeSource, " and event type ", changeEventType, "\n")
+		identifier, _ := cmd.Flags().GetString("identifier")
+		timestamp, _ := cmd.Flags().GetInt64("timestamp")
+		source, _ := cmd.Flags().GetString("source")
+		eventType, _ := cmd.Flags().GetString("event_type")
 
-		items := []*change{{Source: changeSource, ChangeID: changeIdentifier, TimeCreated: time.Unix(changeTimestamp, 0), EventType: changeEventType}}
+		fmt.Print("Pushing change event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and event type ", eventType, "\n")
+
+		items := []*change{{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType}}
 		CreateEvent("changes", items)
 	},
 }
 
 func init() {
 	pushCmd.AddCommand(changeCmd)
-	changeCmd.Flags().StringVar(&changeIdentifier, "identifier", "", "Change identifer (e.g.: commit sha)")
+	changeCmd.Flags().String("identifier", "", "Change identifer (e.g.: commit sha)")
 	changeCmd.MarkFlagRequired("identifier")
-	changeCmd.Flags().Int64Var(&changeTimestamp, "timestamp", 0, "Change timestamp (e.g.: 1602253523)")
+	changeCmd.Flags().Int64("timestamp", 0, "Change timestamp (e.g.: 1602253523)")
 	changeCmd.MarkFlagRequired("timestamp")
-	changeCmd.Flags().StringVar(&changeSource, "source", "cli", "Change source (e.g.: cli, git, GitHub)")
-	changeCmd.Flags().StringVar(&changeEventType, "event_type", "commit", "Event type (e.g.: commit, push)")
+	changeCmd.Flags().String("source", "cli", "Change source (e.g.: cli, git, GitHub)")
+	changeCmd.Flags().String("event_type", "commit", "Event type (e.g.: commit, push)")
 }
 
 // BigQuery Change table schema

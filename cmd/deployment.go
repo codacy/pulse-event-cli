@@ -7,10 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var deploymentIdentifier string
-var deploymentTimestamp int64
-var deploymentSource string
-
 // deploymentCmd represents the deployment command
 var deploymentCmd = &cobra.Command{
 	Use:   "deployment",
@@ -18,20 +14,24 @@ var deploymentCmd = &cobra.Command{
 	Long:  `Pushes a deployment event to the Pulse service.`,
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Print("Pushing deployment event with identifier ", deploymentIdentifier, ", timestamp ", time.Unix(deploymentTimestamp, 0), ", source ", deploymentSource, " and changes ", args, "\n")
+		identifier, _ := cmd.Flags().GetString("identifier")
+		timestamp, _ := cmd.Flags().GetInt64("timestamp")
+		source, _ := cmd.Flags().GetString("source")
 
-		items := []*deployment{{Source: deploymentSource, DeployID: deploymentIdentifier, TimeCreated: time.Unix(deploymentTimestamp, 0), Changes: args}}
+		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
+
+		items := []*deployment{{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args}}
 		CreateEvent("deployments", items)
 	},
 }
 
 func init() {
 	pushCmd.AddCommand(deploymentCmd)
-	deploymentCmd.Flags().StringVar(&deploymentIdentifier, "identifier", "", "Deployment identifer (e.g.: commit sha)")
+	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit sha)")
 	deploymentCmd.MarkFlagRequired("identifier")
-	deploymentCmd.Flags().Int64Var(&deploymentTimestamp, "timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
+	deploymentCmd.Flags().Int64("timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
-	deploymentCmd.Flags().StringVar(&deploymentSource, "source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
+	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
 }
 
 // BigQuery Deployments table schema
