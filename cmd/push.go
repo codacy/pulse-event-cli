@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
+	"cloud.google.com/go/bigquery"
 	"github.com/spf13/cobra"
+	"google.golang.org/api/option"
 )
 
 // CredentialsString authenticates the user
@@ -37,6 +40,23 @@ func GetCredentials() (CredentialsType, []byte) {
 	json.Unmarshal(credentialsBytes, &credentials)
 
 	return credentials, credentialsBytes
+}
+
+// CreateEvent creates the events in the data store
+func CreateEvent(tableName string, events interface{}) {
+	credentials, credentialsBytes := GetCredentials()
+
+	ctx := context.Background()
+	clientOptions := option.WithCredentialsJSON(credentialsBytes)
+	client, err := bigquery.NewClient(ctx, credentials.ProjectID, clientOptions)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ins := client.Dataset(credentials.DataSet).Table(tableName).Inserter()
+	if err := ins.Put(ctx, events); err != nil {
+		fmt.Println(err)
+	}
 }
 
 // CredentialsType authenticates the user

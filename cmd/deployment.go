@@ -1,13 +1,10 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"time"
 
-	"cloud.google.com/go/bigquery"
 	"github.com/spf13/cobra"
-	"google.golang.org/api/option"
 )
 
 var deploymentIdentifier string
@@ -23,20 +20,8 @@ var deploymentCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print("Pushing deployment event with identifier ", deploymentIdentifier, ", timestamp ", time.Unix(deploymentTimestamp, 0), ", source ", deploymentSource, " and changes ", args, "\n")
 
-		credentials, credentialsBytes := GetCredentials()
-
-		ctx := context.Background()
-		clientOptions := option.WithCredentialsJSON(credentialsBytes)
-		client, err := bigquery.NewClient(ctx, credentials.ProjectID, clientOptions)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		ins := client.Dataset(credentials.DataSet).Table("deployments").Inserter()
 		items := []*deployment{{Source: deploymentSource, DeployID: deploymentIdentifier, TimeCreated: time.Unix(deploymentTimestamp, 0), Changes: args}}
-		if err := ins.Put(ctx, items); err != nil {
-			fmt.Println(err)
-		}
+		CreateEvent("deployments", items)
 	},
 }
 

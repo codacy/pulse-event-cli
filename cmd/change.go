@@ -1,13 +1,10 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"time"
 
-	"cloud.google.com/go/bigquery"
 	"github.com/spf13/cobra"
-	"google.golang.org/api/option"
 )
 
 var changeIdentifier string
@@ -23,20 +20,8 @@ var changeCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Print("Pushing change event with identifier ", changeIdentifier, ", timestamp ", time.Unix(changeTimestamp, 0), ", source ", changeSource, " and event type ", changeEventType, "\n")
 
-		credentials, credentialsBytes := GetCredentials()
-
-		ctx := context.Background()
-		clientOptions := option.WithCredentialsJSON(credentialsBytes)
-		client, err := bigquery.NewClient(ctx, credentials.ProjectID, clientOptions)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		ins := client.Dataset(credentials.DataSet).Table("changes").Inserter()
 		items := []*change{{Source: changeSource, ChangeID: changeIdentifier, TimeCreated: time.Unix(changeTimestamp, 0), EventType: changeEventType}}
-		if err := ins.Put(ctx, items); err != nil {
-			fmt.Println(err)
-		}
+		CreateEvent("changes", items)
 	},
 }
 
