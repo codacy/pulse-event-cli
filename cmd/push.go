@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -20,4 +24,23 @@ func init() {
 	rootCmd.AddCommand(pushCmd)
 	pushCmd.PersistentFlags().StringVar(&CredentialsString, "credentials", "", "Cedentials to authenticate the user")
 	pushCmd.MarkFlagRequired("credentials")
+}
+
+// GetCredentials parses credentials
+func GetCredentials() (CredentialsType, []byte) {
+	var credentialsBytes []byte
+	var credentials CredentialsType
+	credentialsBytes, err := base64.StdEncoding.DecodeString(CredentialsString)
+	if err != nil {
+		fmt.Println(err)
+	}
+	json.Unmarshal(credentialsBytes, &credentials)
+
+	return credentials, credentialsBytes
+}
+
+// CredentialsType authenticates the user
+type CredentialsType struct {
+	ProjectID string `json:"project_id"`
+	DataSet   string `json:"data_set"`
 }
