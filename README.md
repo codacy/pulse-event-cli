@@ -2,9 +2,17 @@
 
 Command line interface to push events to the pulse service
 
-## Push events
+## Usage
 
-### Deployments
+For a detailed list of all commands/flags use:
+
+```
+./event-cli --help
+```
+
+### Push events
+
+#### Deployments
 
 ```sh
 ./event-cli push deployment \
@@ -14,7 +22,7 @@ Command line interface to push events to the pulse service
     d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 6ccff2820ff356b609d8a000e082af866d144cc8
 ```
 
-### Changes
+#### Changes
 
 ```sh
 ./event-cli push change \
@@ -23,7 +31,7 @@ Command line interface to push events to the pulse service
     --timestamp 1602852032
 ```
 
-### Incidents
+#### Incidents
 
 ```sh
 ./event-cli push incident \
@@ -36,7 +44,7 @@ Command line interface to push events to the pulse service
 ## Build
 
 ```sh
-go build                                                                          
+go build
 ```
 
 ## Release
