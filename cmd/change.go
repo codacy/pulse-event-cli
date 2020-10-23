@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -20,8 +21,9 @@ var changeCmd = &cobra.Command{
 
 		fmt.Print("Pushing change event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and event type ", eventType, "\n")
 
-		items := []*change{{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType}}
-		createEvent("changes", items)
+		item := change{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType, Type: "change"}
+		itemBytes, _ := json.Marshal(item)
+		createEvent(itemBytes)
 	},
 }
 
@@ -35,10 +37,10 @@ func init() {
 	changeCmd.Flags().String("event_type", "commit", "Event type (e.g.: commit, push)")
 }
 
-// BigQuery Change table schema
 type change struct {
-	Source      string    `bigquery:"source"`
-	ChangeID    string    `bigquery:"change_id"`
-	TimeCreated time.Time `bigquery:"time_created"`
-	EventType   string    `bigquery:"event_type"`
+	Source      string    `json:"source"`
+	ChangeID    string    `json:"change_id"`
+	TimeCreated time.Time `json:"time_created"`
+	EventType   string    `json:"event_type"`
+	Type        string    `json:"$type"`
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -20,8 +21,9 @@ var incidentCmd = &cobra.Command{
 
 		fmt.Print("Pushing incident event with identifier ", identifier, ", created timestamp ", time.Unix(timestampCreated, 0), ", resolved timestamp ", time.Unix(timestampResolved, 0), ", source ", source, "\n")
 
-		items := []*incident{{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0)}}
-		createEvent("incidents", items)
+		item := incident{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0), Type: "incident"}
+		itemBytes, _ := json.Marshal(item)
+		createEvent(itemBytes)
 	},
 }
 
@@ -36,10 +38,10 @@ func init() {
 	incidentCmd.Flags().String("source", "cli", "Incident source (e.g.: cli, git, GitHub)")
 }
 
-// BigQuery Incident table schema
 type incident struct {
-	Source       string    `bigquery:"source"`
-	IncidentID   string    `bigquery:"incident_id"`
-	TimeCreated  time.Time `bigquery:"time_created"`
-	TimeResolved time.Time `bigquery:"time_resolved"`
+	Source       string    `json:"source"`
+	IncidentID   string    `json:"incident_id"`
+	TimeCreated  time.Time `json:"time_created"`
+	TimeResolved time.Time `json:"time_resolved"`
+	Type         string    `json:"$type"`
 }

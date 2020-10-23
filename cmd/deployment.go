@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -20,8 +21,9 @@ var deploymentCmd = &cobra.Command{
 
 		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
 
-		items := []*deployment{{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args}}
-		createEvent("deployments", items)
+		item := deployment{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args, Type: "deployment"}
+		itemBytes, _ := json.Marshal(item)
+		createEvent(itemBytes)
 	},
 }
 
@@ -34,10 +36,10 @@ func init() {
 	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
 }
 
-// BigQuery Deployments table schema
 type deployment struct {
-	Source      string    `bigquery:"source"`
-	DeployID    string    `bigquery:"deploy_id"`
-	TimeCreated time.Time `bigquery:"time_created"`
-	Changes     []string  `bigquery:"changes"`
+	Source      string    `json:"source"`
+	DeployID    string    `json:"deploy_id"`
+	TimeCreated time.Time `json:"time_created"`
+	Changes     []string  `json:"changes"`
+	Type        string    `json:"$type"`
 }

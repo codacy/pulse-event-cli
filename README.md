@@ -16,7 +16,7 @@ For a detailed list of all commands/flags use:
 
 ```sh
 ./event-cli push deployment \
-    --credentials "<CREDENTIALS>" \
+    --api-key "<API-KEY>" \
     --identifier 1.0.1 \
     --timestamp 1602852032 \
     d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 6ccff2820ff356b609d8a000e082af866d144cc8
@@ -26,7 +26,7 @@ For a detailed list of all commands/flags use:
 
 ```sh
 ./event-cli push change \
-    --credentials "<CREDENTIALS>" \
+    --api-key "<API-KEY>" \
     --identifier d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 \
     --timestamp 1602852032
 ```
@@ -35,7 +35,7 @@ For a detailed list of all commands/flags use:
 
 ```sh
 ./event-cli push incident \
-    --credentials "<CREDENTIALS>" \
+    --api-key "<API-KEY>" \
     --identifier d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 \
     --timestampCreated 1602852032 \
     --timestampResolved 1602852033

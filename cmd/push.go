@@ -1,18 +1,15 @@
 package cmd
 
 import (
-	"context"
-	"encoding/base64"
-	"encoding/json"
-	"fmt"
+	"bytes"
+	"net/http"
+	"strings"
 
-	"cloud.google.com/go/bigquery"
 	"github.com/spf13/cobra"
-	"google.golang.org/api/option"
 )
 
-// credentialsString authenticates the user
-var credentialsString string
+var apiKey string
+var baseURL string
 
 // pushCmd represents the push command
 var pushCmd = &cobra.Command{
@@ -25,42 +22,19 @@ var pushCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(pushCmd)
-	pushCmd.PersistentFlags().StringVar(&credentialsString, "credentials", "", "Cedentials to authenticate the user")
-	pushCmd.MarkFlagRequired("credentials")
+	pushCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "The API key to authenticate the organization/system")
+	pushCmd.MarkFlagRequired("api-key")
+	pushCmd.PersistentFlags().StringVar(&baseURL, "base-url", "https://ingestion.acceleratedevops.net", "The API base url")
+	pushCmd.MarkFlagRequired("base-url")
 }
 
 // createEvent creates the events in the data store
-func createEvent(tableName string, events interface{}) {
-	credentials, credentialsBytes := getCredentials()
+func createEvent(json []byte) {
+	url := strings.TrimSuffix(baseURL, "/") + "/v1/ingestion/cli?api_key=" + apiKey
 
-	ctx := context.Background()
-	clientOptions := option.WithCredentialsJSON(credentialsBytes)
-	client, err := bigquery.NewClient(ctx, credentials.ProjectID, clientOptions)
+	_, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
-
-	ins := client.Dataset(credentials.DataSet).Table(tableName).Inserter()
-	if err := ins.Put(ctx, events); err != nil {
-		fmt.Println(err)
-	}
-}
-
-// getCredentials parses credentials
-func getCredentials() (credentialsType, []byte) {
-	var credentialsBytes []byte
-	var credentials credentialsType
-	credentialsBytes, err := base64.StdEncoding.DecodeString(credentialsString)
-	if err != nil {
-		fmt.Println(err)
-	}
-	json.Unmarshal(credentialsBytes, &credentials)
-
-	return credentials, credentialsBytes
-}
-
-// credentialsType authenticates the user
-type credentialsType struct {
-	ProjectID string `json:"project_id"`
-	DataSet   string `json:"data_set"`
 }
