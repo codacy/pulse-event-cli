@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -33,9 +33,23 @@ func init() {
 
 // createEvent creates the events in the data store
 func createEvent(json []byte) {
-	url := strings.TrimSuffix(baseURL, "/") + "/v1/ingestion/cli?api_key=" + apiKey
+	parsedBaseURL, err := url.Parse(baseURL)
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+	if err != nil {
+		fmt.Printf("Invalid base URL: %s", baseURL)
+		os.Exit(1)
+	}
+
+	endpointURL, _ := parsedBaseURL.Parse("/v1/ingestion/cli")
+
+	err = addQueryParameter(endpointURL, "api_key", apiKey)
+
+	if err != nil {
+		fmt.Printf("Invalid query parameters in base URL: %s", baseURL)
+		os.Exit(1)
+	}
+
+	resp, err := http.Post(endpointURL.String(), "application/json", bytes.NewBuffer(json))
 
 	if err != nil {
 		fmt.Print("Unexpected error pushing event.\n")
@@ -57,4 +71,16 @@ func createEvent(json []byte) {
 		os.Exit(1)
 	}
 
+}
+
+func addQueryParameter(u *url.URL, key string, value string) error {
+	q, err := url.ParseQuery(u.RawQuery)
+
+	if err != nil {
+		return err
+	}
+
+	q.Add(key, value)
+	u.RawQuery = q.Encode()
+	return nil
 }
