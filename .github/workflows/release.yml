@@ -42,17 +42,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: latest
-          args: |
-            release --rm-dist
-            for binary_directory in $(find dist -type d -iname 'pulse-event-cli_*' | awk -F'/' '{print $2}')
-            do
-              binary="$(ls dist/$binary_directory)"
-              echo "Pushing dist/$binary_directory/$binary to bintray"
-              curl \
-                -u codacy-ci:$BINTRAY_API_KEY \
-                -H "X-Bintray-Package:event-cli" \
-                -H "X-Bintray-Version:${{ steps.generate-version.outputs.version }}" \
-                -T "dist/$binary_directory/$binary" \
-                https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/$binary_directory/$binary
-            done
-            curl -X POST -ucodacy-ci:$BINTRAY_API_KEY https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/publish
+          args: release
+      - name: "Push binaries to bintray"
+        run: |
+          for binary_directory in $(find dist -type d -iname 'pulse-event-cli_*' | awk -F'/' '{print $2}')
+          do
+            binary="$(ls dist/$binary_directory)"
+            echo "Pushing dist/$binary_directory/$binary to bintray"
+            curl \
+              -u codacy-ci:$BINTRAY_API_KEY \
+              -H "X-Bintray-Package:event-cli" \
+              -H "X-Bintray-Version:${{ steps.generate-version.outputs.version }}" \
+              -T "dist/$binary_directory/$binary" \
+              https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/$binary_directory/$binary
+          done
+          curl -X POST -ucodacy-ci:$BINTRAY_API_KEY https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/publish
