@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -32,9 +35,26 @@ func init() {
 func createEvent(json []byte) {
 	url := strings.TrimSuffix(baseURL, "/") + "/v1/ingestion/cli?api_key=" + apiKey
 
-	_, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
 
 	if err != nil {
-		panic(err)
+		fmt.Print("Unexpected error pushing event.\n")
+		os.Exit(1)
 	}
+
+	statusOk := resp.StatusCode >= 200 && resp.StatusCode <= 299
+
+	if !statusOk {
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		bodyStr := string(body)
+
+		if err != nil {
+			bodyStr = "Failed to read http response body"
+		}
+
+		fmt.Printf("Failed to push event, status code %s.\n%s\n", resp.Status, bodyStr)
+		os.Exit(1)
+	}
+
 }
