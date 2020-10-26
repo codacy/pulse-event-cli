@@ -44,6 +44,8 @@ jobs:
           version: latest
           args: release
       - name: "Push binaries to bintray"
+        env:
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
         run: |
           for binary_directory in $(find dist -type d -iname 'pulse-event-cli_*' | awk -F'/' '{print $2}')
           do
