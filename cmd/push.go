@@ -13,6 +13,7 @@ import (
 
 var apiKey string
 var baseURL string
+var system string
 
 // pushCmd represents the push command
 var pushCmd = &cobra.Command{
@@ -29,6 +30,7 @@ func init() {
 	pushCmd.MarkFlagRequired("api-key")
 	pushCmd.PersistentFlags().StringVar(&baseURL, "base-url", "https://ingestion.acceleratedevops.net", "The API base url")
 	pushCmd.MarkFlagRequired("base-url")
+	pushCmd.PersistentFlags().StringVar(&system, "system", "", "The system the data refers to (e.g.: webapp, backend)")
 }
 
 // createEvent creates the events in the data store
@@ -42,7 +44,13 @@ func createEvent(json []byte) {
 
 	endpointURL, _ := parsedBaseURL.Parse("/v1/ingestion/cli")
 
-	err = addQueryParameter(endpointURL, "api_key", apiKey)
+	queryParameters := map[string]string{"api_key": apiKey}
+
+	if system != "" {
+		queryParameters["system"] = system
+	}
+
+	err = addQueryParameters(endpointURL, queryParameters)
 
 	if err != nil {
 		fmt.Printf("Invalid query parameters in base URL: %s", baseURL)
@@ -73,14 +81,17 @@ func createEvent(json []byte) {
 
 }
 
-func addQueryParameter(u *url.URL, key string, value string) error {
+func addQueryParameters(u *url.URL, parameters map[string]string) error {
 	q, err := url.ParseQuery(u.RawQuery)
 
 	if err != nil {
 		return err
 	}
 
-	q.Add(key, value)
+	for key, value := range parameters {
+		q.Add(key, value)
+	}
 	u.RawQuery = q.Encode()
+
 	return nil
 }
