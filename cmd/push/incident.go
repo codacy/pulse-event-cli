@@ -13,21 +13,27 @@ var incidentCmd = &cobra.Command{
 	Use:   "incident",
 	Short: "Push incident event",
 	Long:  `Pushes a incident event to the Pulse service.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestampCreated, _ := cmd.Flags().GetInt64("timestampCreated")
 		timestampResolved, _ := cmd.Flags().GetInt64("timestampResolved")
 		source, _ := cmd.Flags().GetString("source")
+		cmd.SilenceUsage = true
+
+		apiClient, err := GetAPIClient(cmd)
+		if err != nil {
+			return err
+		}
 
 		fmt.Print("Pushing incident event with identifier ", identifier, ", created timestamp ", time.Unix(timestampCreated, 0), ", resolved timestamp ", time.Unix(timestampResolved, 0), ", source ", source, "\n")
 
 		item := events.Incident{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0), Type: "incident"}
-		apiClient.CreateEvent(item)
+		return apiClient.CreateEvent(item)
 	},
 }
 
 func init() {
-	pushCmd.AddCommand(incidentCmd)
+	PushCmd.AddCommand(incidentCmd)
 	incidentCmd.Flags().String("identifier", "", "Incident identifer (e.g.: commit sha)")
 	incidentCmd.MarkFlagRequired("identifier")
 	incidentCmd.Flags().Int64("timestampCreated", 0, "Incident created timestamp (e.g.: 1602253523)")

@@ -49,7 +49,7 @@ func (client *PulseIngestionAPIClient) CreateEvent(event interface{}) error {
 	resp, err := http.Post(endpointURL.String(), "application/json", bytes.NewBuffer(json))
 
 	if err != nil {
-		return fmt.Errorf("unexpected error pushing event")
+		return fmt.Errorf("unexpected error pushing event:\n%v", err)
 	}
 
 	statusOk := resp.StatusCode >= 200 && resp.StatusCode <= 299

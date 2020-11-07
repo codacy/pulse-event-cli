@@ -13,21 +13,27 @@ var changeCmd = &cobra.Command{
 	Use:   "change",
 	Short: "Push change event",
 	Long:  `Pushes a change event to the Pulse service.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestamp, _ := cmd.Flags().GetInt64("timestamp")
 		source, _ := cmd.Flags().GetString("source")
 		eventType, _ := cmd.Flags().GetString("event_type")
+		cmd.SilenceUsage = true
+
+		apiClient, err := GetAPIClient(cmd)
+		if err != nil {
+			return err
+		}
 
 		fmt.Print("Pushing change event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and event type ", eventType, "\n")
 
 		item := events.Change{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType, Type: "change"}
-		apiClient.CreateEvent(item)
+		return apiClient.CreateEvent(item)
 	},
 }
 
 func init() {
-	pushCmd.AddCommand(changeCmd)
+	PushCmd.AddCommand(changeCmd)
 	changeCmd.Flags().String("identifier", "", "Change identifer (e.g.: commit sha)")
 	changeCmd.MarkFlagRequired("identifier")
 	changeCmd.Flags().Int64("timestamp", 0, "Change timestamp (e.g.: 1602253523)")
