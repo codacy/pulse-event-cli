@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/codacy/event-cli/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +26,7 @@ var pushCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(pushCmd)
+	cmd.RootCmd.AddCommand(pushCmd)
 	pushCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "The API key to authenticate the organization/system")
 	pushCmd.MarkFlagRequired("api-key")
 	pushCmd.PersistentFlags().StringVar(&baseURL, "base-url", "https://ingestion.acceleratedevops.net", "The API base url")
