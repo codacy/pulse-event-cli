@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	cloud.google.com/go/bigquery v1.12.0
+	github.com/go-git/go-git/v5 v5.2.0
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0

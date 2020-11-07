@@ -41,6 +41,18 @@ For a detailed list of all commands/flags use:
     --timestampResolved 1602852033
 ```
 
+### Push events (git helper)
+
+#### Deployments + changes
+
+```sh
+./event-cli push git deployment \
+    --previous-deployment-ref="<REF>" \
+    --api-key "<API-KEY>" \
+    --identifier 1.0.1 \
+    --timestamp `date +%s`
+```
+
 ## Build
 
 ```sh
