@@ -21,6 +21,7 @@ var deploymentCmd = &cobra.Command{
 		dryRun, _ := cmd.Flags().GetBool("dry-run")
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestamp, _ := cmd.Flags().GetInt64("timestamp")
+		gitDirectory, _ := getGitDirectory(cmd)
 		cmd.SilenceUsage = true
 
 		apiClient, err := push.GetAPIClient(cmd)
@@ -28,7 +29,7 @@ var deploymentCmd = &cobra.Command{
 			return err
 		}
 
-		changesIterator, err := getChanges(previousDeploymentRef)
+		changesIterator, err := getChanges(gitDirectory, previousDeploymentRef)
 		if err != nil {
 			return err
 		}
@@ -73,8 +74,8 @@ var deploymentCmd = &cobra.Command{
 	},
 }
 
-func getChanges(previousDeploymentRef string) (object.CommitIter, error) {
-	repo, err := git.PlainOpen("./")
+func getChanges(gitDirectory string, previousDeploymentRef string) (object.CommitIter, error) {
+	repo, err := git.PlainOpen(gitDirectory)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to get git repository: %v", err)
 	}

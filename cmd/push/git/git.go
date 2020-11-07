@@ -15,6 +15,9 @@ var gitCmd = &cobra.Command{
 func init() {
 	push.PushCmd.AddCommand(gitCmd)
 
-	// TODO add git directory config
-	// deploymentCmd.PersistentFlags().String("git-directory", "./", "The location of the git repo")
+	deploymentCmd.PersistentFlags().String("directory", "./", "The directory where the git repository can be found")
+}
+
+func getGitDirectory(cmd *cobra.Command) (string, error) {
+	return cmd.Flags().GetString("directory")
 }
