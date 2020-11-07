@@ -1,10 +1,10 @@
-package cmd
+package push
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
+	"github.com/codacy/event-cli/pkg/ingestion/events"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +21,8 @@ var changeCmd = &cobra.Command{
 
 		fmt.Print("Pushing change event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and event type ", eventType, "\n")
 
-		item := change{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType, Type: "change"}
-		itemBytes, _ := json.Marshal(item)
-		createEvent(itemBytes)
+		item := events.Change{Source: source, ChangeID: identifier, TimeCreated: time.Unix(timestamp, 0), EventType: eventType, Type: "change"}
+		apiClient.CreateEvent(item)
 	},
 }
 

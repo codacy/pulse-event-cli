@@ -1,10 +1,10 @@
-package cmd
+package push
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
+	"github.com/codacy/event-cli/pkg/ingestion/events"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +21,8 @@ var incidentCmd = &cobra.Command{
 
 		fmt.Print("Pushing incident event with identifier ", identifier, ", created timestamp ", time.Unix(timestampCreated, 0), ", resolved timestamp ", time.Unix(timestampResolved, 0), ", source ", source, "\n")
 
-		item := incident{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0), Type: "incident"}
-		itemBytes, _ := json.Marshal(item)
-		createEvent(itemBytes)
+		item := events.Incident{Source: source, IncidentID: identifier, TimeCreated: time.Unix(timestampCreated, 0), TimeResolved: time.Unix(timestampResolved, 0), Type: "incident"}
+		apiClient.CreateEvent(item)
 	},
 }
 
@@ -36,12 +35,4 @@ func init() {
 	incidentCmd.Flags().Int64("timestampResolved", 0, "Incident resolved timestamp (e.g.: 1602253524)")
 	incidentCmd.MarkFlagRequired("timestampResolved")
 	incidentCmd.Flags().String("source", "cli", "Incident source (e.g.: cli, git, GitHub)")
-}
-
-type incident struct {
-	Source       string    `json:"source"`
-	IncidentID   string    `json:"incident_id"`
-	TimeCreated  time.Time `json:"time_created"`
-	TimeResolved time.Time `json:"time_resolved"`
-	Type         string    `json:"$type"`
 }
