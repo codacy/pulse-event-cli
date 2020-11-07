@@ -10,7 +10,6 @@ var gitCmd = &cobra.Command{
 	Short:            "Git events",
 	Long:             "Utility command to get events from git",
 	TraverseChildren: true,
-	Run:              func(cmd *cobra.Command, args []string) {},
 }
 
 func init() {

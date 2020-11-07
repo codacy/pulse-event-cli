@@ -10,7 +10,7 @@ For a detailed list of all commands/flags use:
 ./event-cli --help
 ```
 
-### Push events
+### Push single events
 
 #### Deployments
 
@@ -41,9 +41,11 @@ For a detailed list of all commands/flags use:
     --timestampResolved 1602852033
 ```
 
-### Push events (git helper)
+### Git helper
 
 #### Deployments + changes
+
+This will push the deployment and all commits from `<REF>` to the `HEAD` of the repo.
 
 ```sh
 ./event-cli push git deployment \

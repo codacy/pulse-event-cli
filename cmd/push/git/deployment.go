@@ -14,8 +14,8 @@ import (
 
 var deploymentCmd = &cobra.Command{
 	Use:   "deployment",
-	Short: "A brief description of your command",
-	Long:  "",
+	Short: "Push events based on git history",
+	Long:  "Retrieves changes for a deployment from git and pushes the deployment event and its changes to the Pulse service.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		previousDeploymentRef, _ := cmd.Flags().GetString("previous-deployment-ref")
 		dryRun, _ := cmd.Flags().GetBool("dry-run")
@@ -103,7 +103,7 @@ func getChanges(previousDeploymentRef string) (object.CommitIter, error) {
 func init() {
 	gitCmd.AddCommand(deploymentCmd)
 
-	deploymentCmd.Flags().String("previous-deployment-ref", "", "Git reference of the previous deployment (commit or tag)")
+	deploymentCmd.Flags().String("previous-deployment-ref", "", "Git reference of the previous deployment (commit sha or tag)")
 	deploymentCmd.MarkFlagRequired("previous-deployment-ref")
 
 	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit sha)")
@@ -112,5 +112,5 @@ func init() {
 	deploymentCmd.MarkFlagRequired("timestamp")
 	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
 
-	deploymentCmd.Flags().Bool("dry-run", false, "If true will only log deployment information")
+	deploymentCmd.Flags().Bool("dry-run", false, "Do not push the events, just print them to stdout")
 }
