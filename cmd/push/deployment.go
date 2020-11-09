@@ -1,10 +1,10 @@
-package cmd
+package push
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
+	"github.com/codacy/event-cli/pkg/ingestion/events"
 	"github.com/spf13/cobra"
 )
 
@@ -14,32 +14,29 @@ var deploymentCmd = &cobra.Command{
 	Short: "Push deployment event",
 	Long:  `Pushes a deployment event to the Pulse service.`,
 	Args:  cobra.MinimumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestamp, _ := cmd.Flags().GetInt64("timestamp")
 		source, _ := cmd.Flags().GetString("source")
+		cmd.SilenceUsage = true
+
+		apiClient, err := GetAPIClient(cmd)
+		if err != nil {
+			return err
+		}
 
 		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
 
-		item := deployment{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args, Type: "deployment"}
-		itemBytes, _ := json.Marshal(item)
-		createEvent(itemBytes)
+		item := events.Deployment{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args, Type: "deployment"}
+		return apiClient.CreateEvent(&item)
 	},
 }
 
 func init() {
-	pushCmd.AddCommand(deploymentCmd)
+	PushCmd.AddCommand(deploymentCmd)
 	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit sha)")
 	deploymentCmd.MarkFlagRequired("identifier")
 	deploymentCmd.Flags().Int64("timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
 	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
-}
-
-type deployment struct {
-	Source      string    `json:"source"`
-	DeployID    string    `json:"deploy_id"`
-	TimeCreated time.Time `json:"time_created"`
-	Changes     []string  `json:"changes"`
-	Type        string    `json:"$type"`
 }
