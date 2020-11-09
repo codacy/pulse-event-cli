@@ -103,10 +103,10 @@ func getChanges(gitDirectory string, previousDeploymentRef string) (object.Commi
 func init() {
 	gitCmd.AddCommand(deploymentCmd)
 
-	deploymentCmd.Flags().String("previous-deployment-ref", "", "Git reference of the previous deployment (commit sha or tag)")
+	deploymentCmd.Flags().String("previous-deployment-ref", "", "Git reference of the previous deployment (commit SHA or tag)")
 	deploymentCmd.MarkFlagRequired("previous-deployment-ref")
 
-	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit sha)")
+	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit SHA)")
 	deploymentCmd.MarkFlagRequired("identifier")
 	deploymentCmd.Flags().Int64("timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
