@@ -77,7 +77,7 @@ var deploymentCmd = &cobra.Command{
 func getChanges(gitDirectory string, previousDeploymentRef string) (object.CommitIter, error) {
 	repo, err := git.PlainOpen(gitDirectory)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to get git repository: %v", err)
+		return nil, fmt.Errorf("failed to get git repository: %v", err)
 	}
 
 	previousDeploymentHash, err := repo.ResolveRevision(plumbing.Revision(previousDeploymentRef))
