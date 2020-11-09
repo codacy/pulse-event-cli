@@ -95,10 +95,9 @@ func getChanges(gitDirectory string, previousDeploymentRef string) (object.Commi
 		return nil, fmt.Errorf("could not get repository HEAD: %v", err)
 	}
 
-	noFilter := object.CommitFilter(func(c *object.Commit) bool { return true })
-	commitFilter := object.CommitFilter(func(commit *object.Commit) bool { return commit.Hash == *previousDeploymentHash })
+	commitStopFilter := object.CommitFilter(func(commit *object.Commit) bool { return commit.Hash == *previousDeploymentHash })
 
-	return object.NewFilterCommitIter(currentCommit, &noFilter, &commitFilter), nil
+	return object.NewFilterCommitIter(currentCommit, nil, &commitStopFilter), nil
 }
 
 func init() {
