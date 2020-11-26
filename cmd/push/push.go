@@ -17,7 +17,7 @@ func init() {
 	cmd.RootCmd.AddCommand(PushCmd)
 	PushCmd.PersistentFlags().String("api-key", "", "The API key to authenticate the organization/system")
 	PushCmd.MarkPersistentFlagRequired("api-key")
-	PushCmd.PersistentFlags().String("base-url", "https://ingestion.acceleratedevops.net", "The API base url")
+	PushCmd.PersistentFlags().String("base-url", "https://ingestion.pulse.codacy.com", "The API base url")
 	PushCmd.PersistentFlags().String("system", "", "The system the data refers to (e.g.: webapp, backend)")
 }
 
