@@ -11,13 +11,14 @@ import (
 
 // PulseIngestionAPIClient a client to call Pulse's ingestion API
 type PulseIngestionAPIClient struct {
-	baseURL *url.URL
-	apiKey  string
-	system  string
+	baseURL     *url.URL
+	apiKey      string
+	system      string
+	environment *string
 }
 
 // NewPulseIngestionAPIClient creates an API client validating the provided baseURL
-func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string) (*PulseIngestionAPIClient, error) {
+func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string, environment *string) (*PulseIngestionAPIClient, error) {
 	parsedBaseURL, err := url.Parse(baseURL)
 
 	if err != nil {
@@ -25,7 +26,7 @@ func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string) (*
 		return nil, err
 	}
 
-	return &PulseIngestionAPIClient{baseURL: parsedBaseURL, apiKey: apiKey, system: system}, nil
+	return &PulseIngestionAPIClient{baseURL: parsedBaseURL, apiKey: apiKey, system: system, environment: environment}, nil
 }
 
 // CreateEvent creates the events in the data store
@@ -46,8 +47,15 @@ func (client *PulseIngestionAPIClient) CreateEvent(event interface{}) error {
 		return fmt.Errorf("invalid query parameters in base URL: %s", client.baseURL)
 	}
 
-	resp, err := http.Post(endpointURL.String(), "application/json", bytes.NewBuffer(json))
-
+	req, err := http.NewRequest("POST", endpointURL.String(), bytes.NewBuffer(json))
+	if err != nil {
+		return fmt.Errorf("unexpected error preparing push event request:\n%v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	if client.environment != nil {
+		req.Header.Set("Environment", *client.environment)
+	}
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("unexpected error pushing event:\n%v", err)
 	}
