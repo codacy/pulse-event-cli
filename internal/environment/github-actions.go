@@ -6,7 +6,7 @@ type gitHubActions struct{}
 
 var gitHubActionsName = "github-actions"
 
-func (gha gitHubActions) GetName() (*string, bool) {
+func (e gitHubActions) GetName() (*string, bool) {
 	if _, ok := os.LookupEnv("GITHUB_ACTIONS"); ok {
 		return &gitHubActionsName, true
 	}
