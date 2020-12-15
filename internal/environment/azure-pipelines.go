@@ -13,7 +13,3 @@ func (e azurePipelines) GetName() (*string, bool) {
 
 	return nil, false
 }
-
-func init() {
-	environments = append(environments, azurePipelines{})
-}

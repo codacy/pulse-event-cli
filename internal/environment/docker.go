@@ -17,7 +17,3 @@ func (e docker) GetName() (*string, bool) {
 
 	return nil, false
 }
-
-func init() {
-	environments = append(environments, docker{})
-}

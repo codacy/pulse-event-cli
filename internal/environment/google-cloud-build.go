@@ -17,7 +17,3 @@ func (e googleCloudBuild) GetName() (*string, bool) {
 
 	return nil, false
 }
-
-func init() {
-	environments = append(environments, googleCloudBuild{})
-}
