@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/codacy/event-cli/pkg/ingestion/events"
+	"github.com/codacy/pulse-event-cli/pkg/ingestion/events"
 	"github.com/spf13/cobra"
 )
 

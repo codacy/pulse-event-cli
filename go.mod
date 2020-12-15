@@ -1,4 +1,4 @@
-module github.com/codacy/event-cli
+module github.com/codacy/pulse-event-cli
 
 go 1.15
 

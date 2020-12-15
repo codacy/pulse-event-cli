@@ -15,10 +15,11 @@ type PulseIngestionAPIClient struct {
 	apiKey      string
 	system      string
 	environment *string
+	cliVersion  string
 }
 
 // NewPulseIngestionAPIClient creates an API client validating the provided baseURL
-func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string, environment *string) (*PulseIngestionAPIClient, error) {
+func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string, environment *string, cliVersion string) (*PulseIngestionAPIClient, error) {
 	parsedBaseURL, err := url.Parse(baseURL)
 
 	if err != nil {
@@ -26,7 +27,7 @@ func NewPulseIngestionAPIClient(baseURL string, apiKey string, system string, en
 		return nil, err
 	}
 
-	return &PulseIngestionAPIClient{baseURL: parsedBaseURL, apiKey: apiKey, system: system, environment: environment}, nil
+	return &PulseIngestionAPIClient{baseURL: parsedBaseURL, apiKey: apiKey, system: system, environment: environment, cliVersion: cliVersion}, nil
 }
 
 // CreateEvent creates the events in the data store
@@ -57,6 +58,7 @@ func (client *PulseIngestionAPIClient) CreateEvent(event interface{}) error {
 	} else {
 		req.Header.Set("Environment", "_unknown_")
 	}
+	req.Header.Set("CLI-Version", client.cliVersion)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("unexpected error pushing event:\n%v", err)

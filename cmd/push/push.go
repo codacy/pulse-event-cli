@@ -1,9 +1,10 @@
 package push
 
 import (
-	"github.com/codacy/event-cli/cmd"
-	"github.com/codacy/event-cli/internal/environment"
-	"github.com/codacy/event-cli/pkg/ingestion"
+	"github.com/codacy/pulse-event-cli/cmd"
+	"github.com/codacy/pulse-event-cli/internal/build"
+	"github.com/codacy/pulse-event-cli/internal/environment"
+	"github.com/codacy/pulse-event-cli/pkg/ingestion"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +30,7 @@ func GetAPIClient(cmd *cobra.Command) (*ingestion.PulseIngestionAPIClient, error
 	system, _ := cmd.Flags().GetString("system")
 
 	environment := environment.GetEnvironmentName()
+	cliVersion := build.Version
 
-	return ingestion.NewPulseIngestionAPIClient(baseURL, apiKey, system, environment)
+	return ingestion.NewPulseIngestionAPIClient(baseURL, apiKey, system, environment, cliVersion)
 }

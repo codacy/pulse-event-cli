@@ -6,18 +6,32 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/codacy/pulse-event-cli/internal/build"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
 
+var versionTemplate = fmt.Sprintf("pulse-event-cli version %v (%v)\nhttps://github.com/codacy/pulse-event-cli/releases/latest\n", build.Version, build.Date)
+
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:              "event-cli",
+	Use:              "pulse-event-cli",
 	Short:            "Pulse command line interface",
 	Long:             `This command line interface is a client for the pulse service.`,
+	Version:          build.Version,
 	TraverseChildren: true,
+}
+
+// versionCmd represents the version command
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Version",
+	Long:  `Version of the cli binary.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf(versionTemplate)
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -31,6 +45,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.event-cli.yaml)")
+	RootCmd.SetVersionTemplate(versionTemplate)
+	RootCmd.AddCommand(versionCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.

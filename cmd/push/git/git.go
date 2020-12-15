@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/codacy/event-cli/cmd/push"
+	"github.com/codacy/pulse-event-cli/cmd/push"
 	"github.com/spf13/cobra"
 )
 

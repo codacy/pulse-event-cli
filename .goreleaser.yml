@@ -5,6 +5,8 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags:
+      - -s -w -X github.com/codacy/pulse-event-cli/internal/build.Version={{.Version}} -X github.com/codacy/pulse-event-cli/internal/build.Date={{time "2006-01-02"}}
 archives:
   - replacements:
       darwin: Darwin
@@ -12,12 +14,12 @@ archives:
       windows: Windows
       386: i386
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
-  name_template: "{{ .Tag }}-prerelease"
+  name_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
