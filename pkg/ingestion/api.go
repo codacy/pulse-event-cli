@@ -54,6 +54,8 @@ func (client *PulseIngestionAPIClient) CreateEvent(event interface{}) error {
 	req.Header.Set("Content-Type", "application/json")
 	if client.environment != nil {
 		req.Header.Set("Environment", *client.environment)
+	} else {
+		req.Header.Set("Environment", "_unknown_")
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
