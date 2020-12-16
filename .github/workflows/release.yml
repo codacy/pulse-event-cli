@@ -25,7 +25,7 @@ jobs:
         run: go build
       - name: Git Version
         id: generate-version
-        uses: codacy/git-version@2.2.0
+        uses: codacy/git-version@2.3.1
       - name: "Tag version"
         run: |
           git tag ${{ steps.generate-version.outputs.version }}
