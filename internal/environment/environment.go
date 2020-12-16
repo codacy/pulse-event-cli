@@ -1,5 +1,10 @@
 package environment
 
+import (
+	"fmt"
+	"os"
+)
+
 type Environment interface {
 	GetName() (*string, bool)
 }
@@ -20,6 +25,10 @@ func GetEnvironmentName() *string {
 		if name, ok := otherEnvironments[i].GetName(); ok {
 			return name
 		}
+	}
+
+	if _, ok := os.LookupEnv("CI"); ok {
+		fmt.Print("INFO: We could not automatically detect the CI you are using.\n      To help us improve support for this CI, contact support@codacy.com to let us know about it.\n\n")
 	}
 
 	return nil
