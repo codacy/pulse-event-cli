@@ -1,6 +1,6 @@
 name: Pulse Events
 author: "Codacy"
-description: 'Push events to the pulse service'
+description: "Push deployment and change events to Codacy's Pulse service"
 branding:
   icon: 'check'
   color: 'gray-dark'

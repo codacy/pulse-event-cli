@@ -24,8 +24,7 @@ changelog:
       - "^docs:"
       - "^test:"
 dockers:
-  -
-    binaries:
+  - binaries:
     - pulse-event-cli
     image_templates:
     - "codacy/pulse-events-cli:{{ .Tag }}"
