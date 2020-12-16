@@ -55,6 +55,43 @@ This will push the deployment and all commits from `<REF>` to the `HEAD` of the 
     --timestamp `date +%s`
 ```
 
+### Detected environments
+
+Currently the CLI detects CI environments where data is being sent from.
+This information is collected to improve the support on how collect the metrics in this environments.
+
+If your CI environment is not in this list contact `support@codacy.com` to let us know about it.
+
+Supported environments:
+
+- appveyor
+- aws-codebuild
+- azurePipelines
+- bitrise
+- buddy
+- buildkite
+- circleci
+- codefresh
+- codemagic
+- codeship
+- docker
+- drone
+- github-actions
+- gitlab-ci
+- gocd
+- google-cloud-build
+- greenhouse
+- heroku-ci
+- jenkins
+- jfrog-pipelines
+- magnum
+- semaphore
+- shippable
+- solano
+- teamcity
+- travis
+- wercker
+
 ## Build
 
 ```sh
