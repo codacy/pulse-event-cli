@@ -28,7 +28,7 @@ func GetEnvironmentName() *string {
 	}
 
 	if _, ok := os.LookupEnv("CI"); ok {
-		fmt.Print("INFO: We could not automatically detect the CI you are using.\n      To help us improve support for this CI, contact support@codacy.com to let us know about it.\n\n")
+		fmt.Print("INFO: We could not automatically detect the CI environment you are using.\n      To help us improve support for your CI environment, contact pulsesupport@codacy.com to let us know about it.\n\n")
 	}
 
 	return nil
