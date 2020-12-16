@@ -8,10 +8,12 @@ inputs:
   args:
     description: "Check our documentation to find out the correct args https://docs.pulse.codacy.com/"
     required: true
+  version:
+    description: "Version of the pulse-event-cli"
+    required: true
+    default: "latest"
 runs:
-  using: 'docker'
-  image: 'docker://codacy/pulse-events-cli'
-  args:
-  - ${{ inputs.args }}
-
-
+  using: "composite"
+  steps:
+    - run: docker run codacy/pulse-events-cli:${{ inputs.version }} ${{ inputs.args }}
+      shell: bash
