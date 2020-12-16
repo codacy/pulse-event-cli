@@ -1,0 +1,17 @@
+name: Pulse Events
+author: "Codacy"
+description: 'Push events to the pulse service'
+branding:
+  icon: 'check'
+  color: 'gray-dark'
+inputs:
+  args:
+    description: "Check our documentation to find out the correct args https://docs.pulse.codacy.com/"
+    required: true
+runs:
+  using: 'docker'
+  image: 'docker://codacy/pulse-events-cli'
+  args:
+  - ${{ inputs.args }}
+
+
