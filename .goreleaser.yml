@@ -23,3 +23,12 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+dockers:
+  -
+    binaries:
+    - pulse-event-cli
+    image_templates:
+    - "codacy/pulse-events-cli:{{ .Tag }}"
+    - "codacy/pulse-events-cli:{{ .Major }}"
+    - "codacy/pulse-events-cli:{{ .Major }}.{{ .Minor }}"
+    - "codacy/pulse-events-cli:latest"
