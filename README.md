@@ -7,7 +7,7 @@ Command line interface to push events to the pulse service
 For a detailed list of all commands/flags use:
 
 ```
-./event-cli --help
+./pulse-event-cli --help
 ```
 
 ### Push single events
@@ -15,7 +15,7 @@ For a detailed list of all commands/flags use:
 #### Deployments
 
 ```sh
-./event-cli push deployment \
+./pulse-event-cli push deployment \
     --api-key "<API-KEY>" \
     --identifier 1.0.1 \
     --timestamp 1602852032 \
@@ -25,7 +25,7 @@ For a detailed list of all commands/flags use:
 #### Changes
 
 ```sh
-./event-cli push change \
+./pulse-event-cli push change \
     --api-key "<API-KEY>" \
     --identifier d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 \
     --timestamp 1602852032
@@ -34,7 +34,7 @@ For a detailed list of all commands/flags use:
 #### Incidents
 
 ```sh
-./event-cli push incident \
+./pulse-event-cli push incident \
     --api-key "<API-KEY>" \
     --identifier d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 \
     --timestampCreated 1602852032 \
@@ -48,7 +48,7 @@ For a detailed list of all commands/flags use:
 This will push the deployment and all commits from `<REF>` to the `HEAD` of the repo.
 
 ```sh
-./event-cli push git deployment \
+./pulse-event-cli push git deployment \
     --previous-deployment-ref="<REF>" \
     --api-key "<API-KEY>" \
     --identifier 1.0.1 \
