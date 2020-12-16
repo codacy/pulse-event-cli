@@ -4,7 +4,7 @@ import "os"
 
 type azurePipelines struct{}
 
-var azurePipelinesName = "azurePipelines"
+var azurePipelinesName = "azure-pipelines"
 
 func (e azurePipelines) GetName() (*string, bool) {
 	if _, ok := os.LookupEnv("TF_BUILD"); ok {

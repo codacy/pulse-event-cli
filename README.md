@@ -58,15 +58,16 @@ This will push the deployment and all commits from `<REF>` to the `HEAD` of the 
 ### Detected environments
 
 Currently the CLI detects CI environments where data is being sent from.
-This information is collected to improve the support on how collect the metrics in this environments.
+This information is collected to improve the support on how we collect the metrics.
 
-If your CI environment is not in this list contact `support@codacy.com` to let us know about it.
+If your CI environment is not in this list,
+contact [pulse support](mailto:pulsesupport@codacy.com) to let us know about it.
 
 Supported environments:
 
 - appveyor
 - aws-codebuild
-- azurePipelines
+- azure-pipelines
 - bitrise
 - buddy
 - buildkite
