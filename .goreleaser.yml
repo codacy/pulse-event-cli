@@ -25,9 +25,9 @@ changelog:
       - "^test:"
 dockers:
   - binaries:
-    - pulse-event-cli
+      - pulse-event-cli
     image_templates:
-    - "codacy/pulse-event-cli:{{ .Tag }}"
-    - "codacy/pulse-event-cli:v{{ .Major }}"
-    - "codacy/pulse-event-cli:v{{ .Major }}.{{ .Minor }}"
-    - "codacy/pulse-event-cli:latest"
+      - "codacy/pulse-event-cli:{{ .Tag }}"
+      - "codacy/pulse-event-cli:v{{ .Major }}"
+      - "codacy/pulse-event-cli:v{{ .Major }}.{{ .Minor }}"
+      - "codacy/pulse-event-cli:latest"

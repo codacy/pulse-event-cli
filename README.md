@@ -1,15 +1,15 @@
 # Pulse Events CLI
 
-Pulse is a command-line interface to push events to <https://pulse.codacy.com/>.
+This is a command-line interface to push events to [Pulse](https://pulse.codacy.com).
 
-Take a look <https://docs.pulse.codacy.com/>
+Take a look at Pulse's documetation [here](https://docs.pulse.codacy.com).
 
 ## Github Action
 
 You can use this Github-Action to send changes and deployment events to Pulse's service
 directly from you CI.
 
-The following workflow is an example where we use [git-version](https://github.com/codacy/git-version) to
+The following workflow is an example where [git-version](https://github.com/codacy/git-version) is used to
 generate new versions on each deployment and store that information in git tags.
 
 ```yaml

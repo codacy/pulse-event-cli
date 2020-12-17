@@ -16,6 +16,5 @@ runs:
   using: "composite"
   steps:
     - run: |
-        echo "${{ inputs.args }}"
         docker run -v $(pwd):/workdir codacy/pulse-event-cli:${{ inputs.version }} ${{ inputs.args }}
       shell: bash
