@@ -50,8 +50,8 @@ jobs:
           args: push git deployment \
             --api-key ${{ secrets.PULSE_ORG_PULSE_API_KEY }} \
             --system $GITHUB_REPOSITORY \
-            --previous-deployment-ref ${{ steps.generate-version.outputs.previous-version }}\
-            --identifier ${{ steps.generate-version.outputs.version }}\
+            --previous-deployment-ref ${{ steps.generate-version.outputs.previous-version }} \
+            --identifier ${{ steps.generate-version.outputs.version }} \
             --timestamp "$(date +%s)"
 ```
 ## Usage
