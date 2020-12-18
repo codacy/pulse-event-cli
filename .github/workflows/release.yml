@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with:
-            # Will fetch all history and tags required to generate version
-            fetch-depth: 0
+          # Will fetch all history and tags required to generate version
+          fetch-depth: 0
       - uses: actions/setup-go@v1
         with:
           go-version: "1.15.2"
@@ -25,11 +25,13 @@ jobs:
         run: go build
       - name: Git Version
         id: generate-version
-        uses: codacy/git-version@2.3.1
+        uses: codacy/git-version@2.4.0
       - name: "Tag version"
         run: |
           git tag ${{ steps.generate-version.outputs.version }}
           git push --tags "https://codacy:${{ secrets.GITHUB_TOKEN }}@github.com/codacy/pulse-event-cli"
+      - name: "Docker login"
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Release
         uses: goreleaser/goreleaser-action@v1
         env:
@@ -53,3 +55,13 @@ jobs:
               https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/$binary_directory/$binary
           done
           curl -X POST -ucodacy-ci:$BINTRAY_API_KEY https://api.bintray.com/content/codacy/pulse/event-cli/${{ steps.generate-version.outputs.version }}/publish
+      - name: "Push data to pulse"
+        uses: ./
+        with:
+          args: |
+            push git deployment \
+              --api-key ${{ secrets.PULSE_ORG_PULSE_API_KEY }} \
+              --system $GITHUB_REPOSITORY \
+              --previous-deployment-ref ${{ steps.generate-version.outputs.previous-version }} \
+              --identifier ${{ steps.generate-version.outputs.version }} \
+              --timestamp "$(date +%s)"

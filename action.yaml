@@ -1,0 +1,20 @@
+name: Pulse Events
+author: "Codacy"
+description: "Push deployment and change events to Codacy's Pulse service"
+branding:
+  icon: 'git-branch'
+  color: 'gray-dark'
+inputs:
+  version:
+    description: 'The version of pulse-event-cli to be ran'
+    required: true
+    default: latest
+  args:
+    description: 'Arguments to be passed to the cli'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        docker run -v $(pwd):/workdir codacy/pulse-event-cli:${{ inputs.version }} ${{ inputs.args }}
+      shell: bash
