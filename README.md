@@ -4,13 +4,12 @@ This is a command-line interface to push events to [Pulse](https://pulse.codacy.
 
 Take a look at Pulse's documentation [here](https://docs.pulse.codacy.com).
 
-## Github Action
+## GitHub Action
 
-You can use this Github-Action to send changes and deployment events to Pulse's service
+You can use this GitHub Action to send changes and deployment events to Pulse's service
 directly from you CI.
 
-The following workflow is an example where [git-version](https://github.com/codacy/git-version) is used to
-generate new versions on each deployment and store that information in git tags.
+The following workflow is an example where [codacy/git-version](https://github.com/codacy/git-version) generates new versions on each deployment and stores that information in Git tags:
 
 ```yaml
 name: Pulse
@@ -113,7 +112,7 @@ Currently the CLI detects CI environments where data is being sent from.
 We're collecting this information to improve the support on how we collect the metrics.
 
 If your CI environment is not in this list,
-contact <mailto:pulsesupport@codacy.com> to let us know about it.
+contact <pulsesupport@codacy.com> to let us know about it.
 
 Supported environments:
 
