@@ -2,7 +2,7 @@
 
 This is a command-line interface to push events to [Pulse](https://pulse.codacy.com).
 
-Take a look at Pulse's documetation [here](https://docs.pulse.codacy.com).
+Take a look at Pulse's documentation [here](https://docs.pulse.codacy.com).
 
 ## Github Action
 
@@ -48,7 +48,7 @@ jobs:
         uses: ./
         with:
           args: push git deployment \
-            --api-key ${{ secrets.PULSE_ORG_PULSE_API_KEY }} \
+            --api-key ${{ secrets.PULSE_ORGANIZATION_API_KEY }} \
             --system $GITHUB_REPOSITORY \
             --previous-deployment-ref ${{ steps.generate-version.outputs.previous-version }} \
             --identifier ${{ steps.generate-version.outputs.version }} \
