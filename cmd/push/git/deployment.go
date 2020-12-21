@@ -103,14 +103,14 @@ func getChanges(gitDirectory string, previousDeploymentRef string) (object.Commi
 func init() {
 	gitCmd.AddCommand(deploymentCmd)
 
-	deploymentCmd.Flags().String("previous-deployment-ref", "", "Git reference of the previous deployment (commit SHA or tag)")
+	deploymentCmd.Flags().String("previous-deployment-ref", "", "git reference of the previous deployment (commit SHA or tag)")
 	deploymentCmd.MarkFlagRequired("previous-deployment-ref")
 
-	deploymentCmd.Flags().String("identifier", "", "Deployment identifer (e.g.: commit SHA)")
+	deploymentCmd.Flags().String("identifier", "", "deployment identifer (e.g.: commit SHA)")
 	deploymentCmd.MarkFlagRequired("identifier")
-	deploymentCmd.Flags().Int64("timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
+	deploymentCmd.Flags().Int64("timestamp", 0, "deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
-	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
+	deploymentCmd.Flags().String("source", "cli", "deployment source (e.g.: cli, git, GitHub)")
 
-	deploymentCmd.Flags().Bool("dry-run", false, "Do not push the events, just print them to stdout")
+	deploymentCmd.Flags().Bool("dry-run", false, "do not push the events, only print them to stdout")
 }
