@@ -23,7 +23,7 @@ func init() {
 		log.Fatalf("Failed to get current working directory: %v", err)
 	}
 
-	deploymentCmd.PersistentFlags().String("directory", path, "The directory where the git repository can be found")
+	deploymentCmd.PersistentFlags().String("directory", path, "directory of the local Git repository")
 }
 
 func getGitDirectory(cmd *cobra.Command) (string, error) {

@@ -17,10 +17,10 @@ var PushCmd = &cobra.Command{
 
 func init() {
 	cmd.RootCmd.AddCommand(PushCmd)
-	PushCmd.PersistentFlags().String("api-key", "", "The API key to authenticate the organization/system")
+	PushCmd.PersistentFlags().String("api-key", "", "API authentication key for the organization")
 	PushCmd.MarkPersistentFlagRequired("api-key")
-	PushCmd.PersistentFlags().String("base-url", "https://ingestion.pulse.codacy.com", "The API base url")
-	PushCmd.PersistentFlags().String("system", "", "The system the data refers to (e.g.: webapp, backend)")
+	PushCmd.PersistentFlags().String("base-url", "https://ingestion.pulse.codacy.com", "base URL of the API endpoint")
+	PushCmd.PersistentFlags().String("system", "", "repository or component to associate with the event")
 }
 
 // GetAPIClient returns an API client created from the push command flags

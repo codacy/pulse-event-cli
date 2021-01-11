@@ -4,7 +4,7 @@ This is a command-line interface to push events to [Pulse](https://pulse.codacy.
 
 Take a look at Pulse's documentation [here](https://docs.pulse.codacy.com).
 
-## Github Action
+## GitHub Action
 
 You can find Pulse's Github-Action in Github's [marketplace](https://github.com/marketplace/actions/pulse-events-cli).
 
@@ -67,7 +67,7 @@ Currently the CLI detects CI environments where data is being sent from.
 We're collecting this information to improve the support on how we collect the metrics.
 
 If your CI environment is not in this list,
-contact <mailto:pulsesupport@codacy.com> to let us know about it.
+contact <pulsesupport@codacy.com> to let us know about it.
 
 Supported environments:
 

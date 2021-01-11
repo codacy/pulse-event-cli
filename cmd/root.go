@@ -19,7 +19,8 @@ var versionTemplate = fmt.Sprintf("pulse-event-cli version %v (%v)\nhttps://gith
 var RootCmd = &cobra.Command{
 	Use:              "pulse-event-cli",
 	Short:            "Pulse command line interface",
-	Long:             `This command line interface is a client for the pulse service.`,
+	Long:             `This command line interface is a client for the Pulse service.
+							For more information see https://docs.pulse.codacy.com`,
 	Version:          build.Version,
 	TraverseChildren: true,
 }
@@ -28,7 +29,7 @@ var RootCmd = &cobra.Command{
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Version",
-	Long:  `Version of the cli binary.`,
+	Long:  `Version of the CLI binary.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf(versionTemplate)
 	},
@@ -44,7 +45,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.event-cli.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "configuration file (the default is $HOME/.event-cli.yaml)")
 	RootCmd.SetVersionTemplate(versionTemplate)
 	RootCmd.AddCommand(versionCmd)
 }
