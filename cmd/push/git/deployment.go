@@ -6,9 +6,7 @@ import (
 
 	"github.com/codacy/pulse-event-cli/cmd/push"
 	"github.com/codacy/pulse-event-cli/pkg/ingestion/events"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-git/go-git/v5/plumbing/object"
+	gitmodule "github.com/gogs/git-module"
 	"github.com/spf13/cobra"
 )
 
@@ -29,17 +27,16 @@ var deploymentCmd = &cobra.Command{
 			return err
 		}
 
-		changesIterator, err := getChanges(gitDirectory, previousDeploymentRef)
+		changes, err := getChanges(gitDirectory, previousDeploymentRef)
 		if err != nil {
 			return err
 		}
 
 		var changesIds []string
-
-		err = changesIterator.ForEach(func(commit *object.Commit) error {
+		for _, commit := range changes {
 			change := events.Change{
 				Source:      "git",
-				ChangeID:    commit.Hash.String(),
+				ChangeID:    commit.ID.String(),
 				TimeCreated: commit.Author.When,
 				EventType:   "commit",
 				Type:        "change",
@@ -50,14 +47,11 @@ var deploymentCmd = &cobra.Command{
 			fmt.Printf("Found change %s\n", change.ChangeID)
 
 			if !dryRun {
-				return apiClient.CreateEvent(change)
+				err := apiClient.CreateEvent(change)
+				if err != nil {
+					return fmt.Errorf("failed to upload change: %v", err)
+				}
 			}
-
-			return nil
-		})
-
-		if err != nil {
-			return fmt.Errorf("failed to upload changes: %v", err)
 		}
 
 		deployment := events.Deployment{Source: "git", DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: changesIds, Type: "deployment"}
@@ -74,30 +68,14 @@ var deploymentCmd = &cobra.Command{
 	},
 }
 
-func getChanges(gitDirectory string, previousDeploymentRef string) (object.CommitIter, error) {
-	repo, err := git.PlainOpen(gitDirectory)
+func getChanges(gitDirectory string, previousDeploymentRef string) ([]*gitmodule.Commit, error) {
+	revisionInterval := fmt.Sprintf("%s..HEAD", previousDeploymentRef)
+	commits, err := gitmodule.RepoLog(gitDirectory, revisionInterval, gitmodule.LogOptions{})
 	if err != nil {
-		return nil, fmt.Errorf("failed to get git repository: %v", err)
+		return []*gitmodule.Commit{}, fmt.Errorf("failed to get git repository: %v", err)
 	}
 
-	previousDeploymentHash, err := repo.ResolveRevision(plumbing.Revision(previousDeploymentRef))
-	if err != nil {
-		return nil, fmt.Errorf("could not get previous deployment revision: %v", err)
-	}
-
-	headReference, err := repo.Head()
-	if err != nil {
-		return nil, fmt.Errorf("could not get repository HEAD: %v", err)
-	}
-
-	currentCommit, err := repo.CommitObject(headReference.Hash())
-	if err != nil {
-		return nil, fmt.Errorf("could not get repository HEAD: %v", err)
-	}
-
-	commitStopFilter := object.CommitFilter(func(commit *object.Commit) bool { return commit.Hash == *previousDeploymentHash })
-
-	return object.NewFilterCommitIter(currentCommit, nil, &commitStopFilter), nil
+	return commits, nil
 }
 
 func init() {
