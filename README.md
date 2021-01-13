@@ -4,6 +4,10 @@ This is a command-line interface to push events to [Pulse](https://pulse.codacy.
 
 Take a look at Pulse's documentation [here](https://docs.pulse.codacy.com).
 
+## Requirements
+
+- git >= 1.8.x
+
 ## GitHub Action
 
 You can find Pulse's Github-Action in Github's [marketplace](https://github.com/marketplace/actions/pulse-events-cli).

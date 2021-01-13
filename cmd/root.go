@@ -17,9 +17,9 @@ var versionTemplate = fmt.Sprintf("pulse-event-cli version %v (%v)\nhttps://gith
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:              "pulse-event-cli",
-	Short:            "Pulse command line interface",
-	Long:             `This command line interface is a client for the Pulse service.
+	Use:   "pulse-event-cli",
+	Short: "Pulse command line interface",
+	Long: `This command line interface is a client for the Pulse service.
 							For more information see https://docs.pulse.codacy.com`,
 	Version:          build.Version,
 	TraverseChildren: true,
