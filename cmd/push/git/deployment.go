@@ -1,6 +1,7 @@
 package git
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
@@ -27,7 +28,7 @@ var deploymentCmd = &cobra.Command{
 			return err
 		}
 
-		changes, err := getChanges(gitDirectory, previousDeploymentRef)
+		changes, err := getChanges(gitDirectory, previousDeploymentRef, args)
 		if err != nil {
 			return err
 		}
@@ -68,14 +69,61 @@ var deploymentCmd = &cobra.Command{
 	},
 }
 
-func getChanges(gitDirectory string, previousDeploymentRef string) ([]*gitmodule.Commit, error) {
+func getChanges(gitDirectory string, previousDeploymentRef string, paths []string) ([]*gitmodule.Commit, error) {
 	revisionInterval := fmt.Sprintf("%s..HEAD", previousDeploymentRef)
-	commits, err := gitmodule.RepoLog(gitDirectory, revisionInterval, gitmodule.LogOptions{})
+	commits, err := RepoLog(gitDirectory, revisionInterval, paths)
 	if err != nil {
 		return []*gitmodule.Commit{}, fmt.Errorf("failed to get git repository: %v", err)
 	}
 
 	return commits, nil
+}
+
+// RepoLog returns a list of commits in the state of given revision of the repository
+// in given path. The returned list is in reverse chronological order.
+//
+// This method is sourced from "github.com/gogs/git-module" to add support for multiple paths
+func RepoLog(repoPath string, rev string, paths []string) ([]*gitmodule.Commit, error) {
+	r, err := gitmodule.Open(repoPath)
+	if err != nil {
+		return nil, fmt.Errorf("open: %v", err)
+	}
+
+	cmd := gitmodule.NewCommand("log", "--pretty="+gitmodule.LogFormatHashOnly, rev)
+
+	if len(paths) > 0 {
+		cmd.AddArgs("--")
+		for _, path := range paths {
+			cmd.AddArgs(path)
+		}
+	}
+
+	logOptions := gitmodule.LogOptions{}
+
+	stdout, err := cmd.RunInDirWithTimeout(logOptions.Timeout, repoPath)
+	if err != nil {
+		return nil, err
+	}
+
+	// parsePrettyFormatLogToList returns a list of commits parsed from given logs that are
+	// formatted in LogFormatHashOnly.
+	parsePrettyFormatLogToList := func(timeout time.Duration, logs []byte) ([]*gitmodule.Commit, error) {
+		if len(logs) == 0 {
+			return []*gitmodule.Commit{}, nil
+		}
+
+		var err error
+		ids := bytes.Split(logs, []byte{'\n'})
+		commits := make([]*gitmodule.Commit, len(ids))
+		for i, id := range ids {
+			commits[i], err = r.CatFileCommit(string(id), gitmodule.CatFileCommitOptions{Timeout: timeout})
+			if err != nil {
+				return nil, err
+			}
+		}
+		return commits, nil
+	}
+	return parsePrettyFormatLogToList(logOptions.Timeout, stdout)
 }
 
 func init() {
