@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: ["master"]
+    branches: ["publish-to-s3"]
 
 jobs:
   release:
@@ -39,6 +39,10 @@ jobs:
         with:
           version: latest
           args: release
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
