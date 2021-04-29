@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: ["master"]
+    branches: ["publish-to-s3"]
 
 jobs:
   release:
