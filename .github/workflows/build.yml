@@ -8,13 +8,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-go@v1
-        with:
-          go-version: "1.15.2"
-      - name: "Checkup"
-        run: go env GOPATH
-      - name: "Install dependencies"
-        run: go get -v ./...
-      - name: "Build"
-        run: go build
+      - name: "Show me your secrets"
+        run: echo $TEST
