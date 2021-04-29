@@ -2,12 +2,31 @@ name: Release
 
 on:
   push:
-    branches: ["master"]
+    branches: ["publish-to-s3"]
 
 jobs:
   release:
+    environment: production
     runs-on: ubuntu-latest
     steps:
+      # - name: "Debug"
+      #   env:
+      #     aws_region: eu-west-1
+      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      #     role_duration_seconds: 3600
+      #   run: |
+      #     echo "debug" > /tmp/debug.txt
+      #     echo "$aws_region" >> /tmp/debug.txt
+      #     echo "$aws_access_key_id" >> /tmp/debug.txt
+      #     echo "$aws_secret_access_key" >> /tmp/debug.txt
+      #     echo "$role_to_assume" >> /tmp/debug.txt
+      #     echo "$role_duration_seconds" >> /tmp/debug.txt
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     limit-access-to-actor: true
       - uses: actions/checkout@master
         with:
           # Will fetch all history and tags required to generate version
@@ -49,7 +68,6 @@ jobs:
           role-duration-seconds: 3600
       - name: "Push binaries to artifacts.codacy.com"
         run: |
-          export AWS_PROFILE=production
           BUCKET=$(aws ssm get-parameter --name "/codacy/artifacts/public/bucket" --query Parameter.Value --output text)
           CLOUDFRONT_ID=$(aws ssm get-parameter --name "/codacy/artifacts/public/cloudfront_id" --query Parameter.Value --output text)
           BINARY_PATH="codacy/pulse/event-cli"
