@@ -15,6 +15,7 @@ type Deployment struct {
 	DeployID    string    `json:"deploy_id"`
 	TimeCreated time.Time `json:"time_created"`
 	Changes     []string  `json:"changes"`
+	Teams       []string  `json:"teams"`
 	Type        string    `json:"$type"`
 }
 

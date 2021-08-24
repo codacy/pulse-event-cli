@@ -20,6 +20,7 @@ var deploymentCmd = &cobra.Command{
 		dryRun, _ := cmd.Flags().GetBool("dry-run")
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestamp, _ := cmd.Flags().GetInt64("timestamp")
+		teams, _ := cmd.Flags().GetStringSlice("teams")
 		gitDirectory, _ := getGitDirectory(cmd)
 		cmd.SilenceUsage = true
 
@@ -55,7 +56,14 @@ var deploymentCmd = &cobra.Command{
 			}
 		}
 
-		deployment := events.Deployment{Source: "git", DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: changesIds, Type: "deployment"}
+		deployment := events.Deployment{
+			Source:      "git",
+			DeployID:    identifier,
+			TimeCreated: time.Unix(timestamp, 0),
+			Changes:     changesIds,
+			Teams:       teams,
+			Type:        "deployment",
+		}
 		fmt.Printf("Deployment %s\n", deployment.DeployID)
 		if !dryRun {
 			err = apiClient.CreateEvent(&deployment)
@@ -137,6 +145,7 @@ func init() {
 	deploymentCmd.Flags().Int64("timestamp", 0, "deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
 	deploymentCmd.Flags().String("source", "cli", "deployment source (e.g.: cli, git, GitHub)")
+	deploymentCmd.Flags().StringSlice("teams", []string{}, "A comma separated list of teams responsible for the changes in this deployment (e.g.: jupiter,mercury)")
 
 	deploymentCmd.Flags().Bool("dry-run", false, "do not push the events, only print them to stdout")
 }

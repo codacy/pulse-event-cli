@@ -29,6 +29,7 @@ For a detailed list of all commands/flags use:
     --api-key "<API-KEY>" \
     --identifier 1.0.1 \
     --timestamp 1602852032 \
+    --teams mercury,jupiter \
     d7c1baaa0975a0e3577dad1c4c2368d3dd4f33b5 6ccff2820ff356b609d8a000e082af866d144cc8
 ```
 
@@ -62,7 +63,8 @@ This will push the deployment and all commits from `<REF>` to the `HEAD` of the 
     --previous-deployment-ref="<REF>" \
     --api-key "<API-KEY>" \
     --identifier 1.0.1 \
-    --timestamp `date +%s`
+    --timestamp `date +%s` \
+    --teams mercury,jupiter
 ```
 
 ### Detected environments

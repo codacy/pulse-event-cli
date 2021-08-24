@@ -18,6 +18,7 @@ var deploymentCmd = &cobra.Command{
 		identifier, _ := cmd.Flags().GetString("identifier")
 		timestamp, _ := cmd.Flags().GetInt64("timestamp")
 		source, _ := cmd.Flags().GetString("source")
+		teams, _ := cmd.Flags().GetStringSlice("teams")
 		cmd.SilenceUsage = true
 
 		apiClient, err := GetAPIClient(cmd)
@@ -25,9 +26,16 @@ var deploymentCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Print("Pushing deployment event with identifier ", identifier, ", timestamp ", time.Unix(timestamp, 0), ", source ", source, " and changes ", args, "\n")
+		fmt.Printf("Pushing deployment event with identifier %s, timestamp %s, source %s, teams %s and changes %s", identifier, time.Unix(timestamp, 0), source, teams, args)
 
-		item := events.Deployment{Source: source, DeployID: identifier, TimeCreated: time.Unix(timestamp, 0), Changes: args, Type: "deployment"}
+		item := events.Deployment{
+			Source:      source,
+			DeployID:    identifier,
+			TimeCreated: time.Unix(timestamp, 0),
+			Changes:     args,
+			Teams:       teams,
+			Type:        "deployment",
+		}
 		return apiClient.CreateEvent(&item)
 	},
 }
@@ -39,4 +47,5 @@ func init() {
 	deploymentCmd.Flags().Int64("timestamp", 0, "Deployment timestamp (e.g.: 1602253523)")
 	deploymentCmd.MarkFlagRequired("timestamp")
 	deploymentCmd.Flags().String("source", "cli", "Deployment source (e.g.: cli, git, GitHub)")
+	deploymentCmd.Flags().StringSlice("teams", []string{}, "A comma separated list of teams responsible for the changes in this deployment (e.g.: jupiter,mercury)")
 }

@@ -1,0 +1,36 @@
+{
+    "settings": {
+      "go.useLanguageServer": true,
+      "gopls": {
+        "build.experimentalWorkspaceModule": true
+      },
+      "go.formatTool": "goimports",
+      "go.autocompleteUnimportedPackages": true,
+      "go.buildOnSave": "workspace",
+      "go.enableCodeLens": {
+        "references": true,
+        "runtest": true
+      },
+      "go.languageServerExperimentalFeatures": {
+        "diagnostics": true
+      },
+      "hediet.vscode-drawio.theme": "Kennedy",
+      "sqltools.format": {
+        "linesBetweenQueries": 2,
+        "reservedWordCase": "upper"
+      },
+      "terraform-ls.rootModules": [
+        "."
+      ]
+    },
+    "extensions": {
+      "recommendations": ["golang.go"]
+    },
+    "folders": [
+      {
+        "name": "Root",
+        "path": "."
+      }
+    ]
+  }
+  
