@@ -10,7 +10,7 @@ import (
 
 // deploymentCmd represents the deployment command
 var deploymentCmd = &cobra.Command{
-	Use:   "deployment",
+	Use:   "deployment [list of changes]",
 	Short: "Push deployment event",
 	Long:  `Pushes a deployment event to the Pulse service.`,
 	Args:  cobra.MinimumNArgs(1),
