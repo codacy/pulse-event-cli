@@ -43,7 +43,7 @@ jobs:
         with:
           version: latest
           args: release
-      - name: Configure AWS Credentials
+      - name: "Configure AWS Credentials"
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: eu-west-1
