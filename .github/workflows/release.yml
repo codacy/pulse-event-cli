@@ -24,14 +24,14 @@ jobs:
           go get github.com/inconshreveable/mousetrap
       - name: "Build"
         run: go build
-      - name: Git Version
+      - name: "Git Version"
         id: generate-version
         uses: codacy/git-version@2.4.0
       - name: "Tag version"
         run: |
           git tag ${{ steps.generate-version.outputs.version }}
           git push --tags "https://codacy:${{ secrets.GITHUB_TOKEN }}@github.com/codacy/pulse-event-cli"
-      - name: Login to Docker Hub
+      - name: "Login to Docker Hub"
         uses: docker/login-action@v1.12.0
         with:
           username: ${{ secrets.DOCKER_USER }}
