@@ -13,9 +13,9 @@ jobs:
         with:
           # Will fetch all history and tags required to generate version
           fetch-depth: 0
-      - uses: actions/setup-go@v1
+      - uses: actions/setup-go@v2
         with:
-          go-version: "1.15.2"
+          go-version: "^1.15.5"
       - name: "Checkup"
         run: go env GOPATH
       - name: "Install dependencies"
