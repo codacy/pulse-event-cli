@@ -57,11 +57,15 @@ jobs:
             binary="$(ls dist/$binary_directory)"
             echo "Pushing dist/$binary_directory/$binary to bintray"
             aws s3 cp "dist/$binary_directory/$binary" s3://${BUCKET}/${BINARY_PATH}/${{ steps.generate-version.outputs.version }}/$binary_directory/$binary
+
+          # If it is a stable version then publish to latest file with current version
+            if $(echo "${{ steps.generate-version.outputs.version }}" | grep -q -E '^[0-9]+\.[0-9]+\.[0-9]+$'); then
+              aws s3 cp "dist/$binary_directory/$binary" s3://${BUCKET}/${BINARY_PATH}/latest/$binary_directory/$binary
+            fi
           done
 
-          # If it is a stable version then publish to latest file with current version and invalidate cloudfront cache
+          # If it is a stable version then invalidate cloudfront cache
           if $(echo "${{ steps.generate-version.outputs.version }}" | grep -q -E '^[0-9]+\.[0-9]+\.[0-9]+$'); then
-            echo "${{ steps.generate-version.outputs.version }}" | tr -d '\n' | aws s3 cp - s3://${BUCKET}/${BINARY_PATH}/latest
             aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_ID} --paths "/${BINARY_PATH}/latest"
           fi
       - name: "Push data to pulse"
