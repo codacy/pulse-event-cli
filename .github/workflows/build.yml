@@ -14,7 +14,5 @@ jobs:
           go-version: "^1.15.5"
       - name: "Checkup"
         run: go env GOPATH
-      - name: "Install dependencies"
-        run: go get -v ./...
       - name: "Build"
         run: go build
