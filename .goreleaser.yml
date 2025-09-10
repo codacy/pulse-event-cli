@@ -21,7 +21,9 @@ changelog:
       - "^test:"
 dockers_v2:
   - images:
-    - "codacy/pulse-event-cli:{{ .Tag }}"
-    - "codacy/pulse-event-cli:v{{ .Major }}"
-    - "codacy/pulse-event-cli:v{{ .Major }}.{{ .Minor }}"
-    - "codacy/pulse-event-cli:latest"
+      - "codacy/pulse-event-cli"
+    tags:
+      - "{{ .Tag }}"
+      - "v{{ .Major}}"
+      - "v{{ .Major }}.{{ .Minor }}"
+      - "latest"
