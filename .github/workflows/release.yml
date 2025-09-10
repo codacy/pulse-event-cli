@@ -33,12 +33,12 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Release
-        uses: goreleaser/goreleaser-action@v1
+        uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           version: latest
-          args: release
+          args: release --clean
       - name: "Configure AWS Credentials"
         uses: aws-actions/configure-aws-credentials@v1
         with:

@@ -1,3 +1,5 @@
+version: 2
+
 builds:
   - env:
       - CGO_ENABLED=0
@@ -7,24 +9,18 @@ builds:
       - darwin
     ldflags:
       - -s -w -X github.com/codacy/pulse-event-cli/internal/build.Version={{.Version}} -X github.com/codacy/pulse-event-cli/internal/build.Date={{time "2006-01-02"}}
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
 checksum:
   name_template: "checksums.txt"
 snapshot:
-  name_template: "{{ .Tag }}"
+  version_template: "{{ .Tag }}"
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
-dockers:
-  - image_templates:
+dockers_v2:
+  - images:
     - "codacy/pulse-event-cli:{{ .Tag }}"
     - "codacy/pulse-event-cli:v{{ .Major }}"
     - "codacy/pulse-event-cli:v{{ .Major }}.{{ .Minor }}"
