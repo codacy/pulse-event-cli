@@ -27,12 +27,18 @@ jobs:
         run: |
           git tag ${{ steps.generate-version.outputs.version }}
           git push --tags "https://codacy:${{ secrets.GITHUB_TOKEN }}@github.com/codacy/pulse-event-cli"
+      - name: Build docker image
+        run: docker build -t "codacy/pulse-event-cli:${{ steps.generate-version.outputs.version }}" .
       - name: "Login to Docker Hub"
         uses: docker/login-action@v1.12.0
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
-      - name: Release
+      - name: Push docker image
+        run: |
+          docker push "codacy/pulse-event-cli:${{ steps.generate-version.outputs.version }}"
+          docker push "codacy/pulse-event-cli:${{ steps.generate-version.outputs.version }}:latest"
+      - name: Push binaries to GitHub
         uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
