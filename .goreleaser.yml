@@ -19,11 +19,3 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
-dockers_v2:
-  - images:
-      - "codacy/pulse-event-cli"
-    tags:
-      - "{{ .Tag }}"
-      - "v{{ .Major}}"
-      - "v{{ .Major }}.{{ .Minor }}"
-      - "latest"
