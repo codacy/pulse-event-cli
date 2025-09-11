@@ -37,7 +37,7 @@ jobs:
       - name: Push docker image
         run: |
           docker push "codacy/pulse-event-cli:${{ steps.generate-version.outputs.version }}"
-          docker push "codacy/pulse-event-cli:${{ steps.generate-version.outputs.version }}:latest"
+          docker push "codacy/pulse-event-cli:latest"
       - name: Push binaries to GitHub
         uses: goreleaser/goreleaser-action@v6
         env:
