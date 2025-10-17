@@ -1,5 +1,5 @@
 # Each line is a file pattern followed by one or more owners.
 
 # Default owners for everything in the repo
-*         @codacy/tarot-be
+*         @codacy/tarot
 README.md @codacy/techwriters
